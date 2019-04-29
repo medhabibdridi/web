@@ -1,30 +1,58 @@
-<?php 
-	echo $header;
-	echo notices();
-?>
-<form action="" method="post" class="form-horizontal single">
-	<?=csrf_field()?>
-	<h5>Newsletter</h5>
-	<fieldset>
-		<div class="form-group">
-			<label class="control-label">Users group</label>
-			<select name="group" class="form-control">
-				<option value="all" selected>All E-mails</option>
-				<option value="orders">Order E-mails</option>
-				<option value="newsletter">Subscribers E-mails</option>
-				<option value="support">Support E-mails</option>
-			</select>
-		</div>
-		<div class="form-group">
-			<label class="control-label">E-mail title</label>
-			<input name="title" type="text" value="<?=(isset($_GET['title'])) ? $_GET['title'] : '';?>" class="form-control" required/>
-		</div>
-		<div class="form-group">
-			<label class="control-label">E-mail content</label>
-			<textarea class="form-control" name="content" rows="10" cols="80" required><?=(isset($_GET['content'])) ? $_GET['content'] : '';?></textarea>
-		</div>
-		<input name="send" type="submit" value="Send E-mail" class="btn btn-primary" />
-	</fieldset>
-</form>
-</div>
-<?php echo $footer;?>
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+class Newsletter {
+
+    private $idNews;
+    private $texte;
+    private $idProd;
+
+    function __construct() {
+        
+    }
+
+    function getIdNews() {
+        return $this->idNews;
+    }
+
+    function getTexte() {
+        return $this->texte;
+    }
+
+    function getIdProd() {
+        return $this->idProd;
+    }
+
+    function setIdNews($idNews) {
+        $this->idNews = $idNews;
+    }
+
+    function setTexte($texte) {
+        $this->texte = $texte;
+    }
+
+    function setIdProd($idProd) {
+        $this->idProd = $idProd;
+    }
+
+    public static function findClientsSubscribed() {
+        $array=[];
+        $db = Db::getInstance();
+        $req = $db->query("SELECT * from clients WHERE subnews='yes'");
+        foreach ($req->fetchAll() as $temp) {
+            $array []= $temp['mail'];
+        }
+        return $array;
+    }
+
+    public function addNewsLetter() {
+        $db = Db::getInstance();
+        $req = $db->query("INSERT INTO newsletter(texte,idProd) VALUES('" . $this->texte . "','" . $this->idProd . "')");
+    }
+
+}
